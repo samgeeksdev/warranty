@@ -20,3 +20,9 @@ type Product struct {
 	WarrantyMonths *int       `json:"warranty_months"`
 	Retired        bool       `json:"retired"`
 }
+
+type ProductFilter struct {
+	CategoryID *uint   `json:"category_id,omitempty"`
+	Name       *string `json:"name,omitempty"` // Add name filter field
+	// You can add other filter fields here (e.g., price range, manufacturer ID)
+}

@@ -1,0 +1,114 @@
+package handlers
+
+import (
+    "errors"
+    "fmt"
+    "net/http"
+    "strconv"
+
+    "warranty/api/controllers"
+    "warranty/api/errs"
+    "warranty/api/models"
+    "warranty/api/services"
+
+    "github.com/gin-gonic/gin"
+)
+
+// GetAllWarranties fetches all warranties
+func GetAllWarranties(c *gin.Context) {
+    // Call service to retrieve all warranties
+    warranties, err := services.GetAllWarrantiesService(c.Request.Context(), database.GetDB())
+    if err != nil {
+        // Handle error based on type (e.g., database error, internal server error)
+        handleError(c, err)
+        return
+    }
+
+    c.JSON(http.StatusOK, warranties)
+}
+
+// GetWarrantyByID fetches a warranty by its ID
+func GetWarrantyByID(c *gin.Context) {
+    idStr := c.Param("id")
+    id, err := strconv.ParseInt(idStr, 10, 64)
+    if err != nil {
+        // Handle invalid ID format error
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid warranty ID"})
+        return
+    }
+
+    // Call service to retrieve warranty by ID
+    warranty, err := services.GetWarrantyByIDService(c.Request.Context(), uint(id), database.GetDB())
+    if err != nil {
+        // Handle error based on type (e.g., warranty not found, database error)
+        handleError(c, err)
+        return
+    }
+
+    c.JSON(http.StatusOK, warranty)
+}
+
+// CreateWarranty creates a new warranty
+func CreateWarranty(c *gin.Context) {
+    var warranty models.Warranty
+    if err := c.BindJSON(&warranty); err != nil {
+        // Handle error binding request body to warranty struct
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid warranty data"})
+        return
+    }
+
+    // Call service to create a new warranty
+    newWarranty, err := services.CreateWarrantyService(c.Request.Context(), database.GetDB(), &warranty)
+    if err != nil {
+        // Handle error based on type (e.g., validation error, database error)
+        handleError(c, err)
+        return
+    }
+
+    c.JSON(http.StatusCreated, newWarranty)
+}
+
+// UpdateWarranty updates an existing warranty
+func UpdateWarranty(c *gin.Context) {
+    idStr := c.Param("id")
+    id, err := strconv.ParseInt(idStr, 10, 64)
+    if err != nil {
+        // Handle invalid ID format error
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid warranty ID"})
+        return
+    }
+
+    var warranty models.Warranty
+    if err := c.BindJSON(&warranty); err != nil {
+        // Handle error binding request body to warranty struct
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid warranty data"})
+        return
+    }
+    warranty.ID = uint(id) // Set the ID from the path parameter
+
+    // Call service to update the warranty
+    updatedWarranty, err := services.UpdateWarrantyService(c.Request.Context(), database.GetDB(), &warranty)
+    if err != nil {
+        // Handle error based on type (e.g., validation error, warranty not found, database error)
+        handleError(c, err)
+        return
+    }
+
+    c.JSON(http.StatusOK, updatedWarranty)
+}
+
+// DeleteWarranty deletes a warranty by its ID
+func DeleteWarranty(c *gin.Context) {
+    idStr := c.Param("id")
+    id, err := strconv.ParseInt(idStr, 10, 64)
+    if err != nil {
+        // Handle invalid ID format error
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid warranty ID"})
+        return
+    }
+
+    // Call service to delete the warranty
+    err = services.DeleteWarrantyService(c.Request.Context(), database.GetDB(), uint(id))
+    if err != nil {
+        // Handle error based on type (e.g., warranty not found, database error)
+        handleError(c

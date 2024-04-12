@@ -69,14 +69,6 @@ func Routes() {
 	}
 
 	// Warranty routes
-	warrantyRoutes := router.Group("/warranties")
-	{
-		warrantyRoutes.GET("/", handlers.GetAllWarranties)
-		warrantyRoutes.GET("/:id", handlers.GetWarrantyByID)
-		warrantyRoutes.POST("/", handlers.CreateWarranty)
-		warrantyRoutes.PUT("/:id", handlers.UpdateWarranty)
-		warrantyRoutes.DELETE("/:id", handlers.DeleteWarranty)
-	}
 
 	// Warranty audit routes
 	warrantyAuditRoutes := router.Group("/warranty_audits")

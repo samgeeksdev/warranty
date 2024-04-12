@@ -572,3 +572,17 @@
 %!(EXTRA string=Error)
 2024/04/10 09:20:52 [2024-04-10 09:20:52][] Unknown error occurred
 %!(EXTRA string=Error)
+2024/04/10 10:32:06 [2024-04-10 10:32:06][Error] 
+%!(EXTRA *errors.errorString=failed to open database connection: sql: unknown driver "postgres" (forgotten import?))
+2024/04/10 12:29:44 [2024-04-10 12:29:44][] Unknown error occurred
+%!(EXTRA string=Error)
+2024/04/11 07:45:40 [2024-04-11 07:45:40][] Unknown error occurred
+%!(EXTRA string=Error)
+2024/04/11 07:47:40 [2024-04-11 07:47:40][] Unknown error occurred
+%!(EXTRA string=Error)
+2024/04/11 09:20:18 [2024-04-11 09:20:18][] Unknown error occurred
+%!(EXTRA string=Error)
+2024/04/12 09:59:37 [2024-04-12 09:59:37][] Unknown error occurred
+%!(EXTRA string=Error)
+2024/04/12 10:04:16 [2024-04-12 10:04:16][] Unknown error occurred
+%!(EXTRA string=Error)

@@ -1,33 +1,112 @@
 package handlers
 
 import (
+	"errors"
+	"net/http"
+	"strconv"
+
+	"warranty/api/errs"
+	"warranty/api/models"
+	"warranty/api/services"
+	"warranty/database"
+
 	"github.com/gin-gonic/gin"
 )
 
-// GetCustomers handles GET request to fetch all customers
+// Customer handlers
+
 func GetCustomers(c *gin.Context) {
-	// Implementation to fetch all customers
+	customers, err := services.GetAllCustomersService(c.Request.Context(), database.GetDB())
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, customers)
 }
 
-// CreateCustomer handles POST request to create a new customer
 func CreateCustomer(c *gin.Context) {
-	// Implementation to create a new customer
+	var customer models.Customer
+	if err := c.BindJSON(&customer); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer data"})
+		return
+	}
+
+	newCustomer, err := services.CreateCustomerService(c.Request.Context(), database.GetDB(), &customer)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, newCustomer)
 }
 
-// GetCustomerByID handles GET request to fetch a customer by ID
 func GetCustomerByID(c *gin.Context) {
-	//id := c.Param("id")
-	// Implementation to fetch customer by ID
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
+		return
+	}
+
+	customer, err := services.GetCustomerByIDService(c.Request.Context(), database.GetDB(), uint(id))
+	if err != nil {
+		if errors.Is(err, errs.ErrCustomerNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
+			return
+		}
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, customer)
 }
 
-// UpdateCustomer handles PUT request to update a customer
 func UpdateCustomer(c *gin.Context) {
-	//id := c.Param("id")
-	// Implementation to update a customer
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
+		return
+	}
+
+	var customer models.Customer
+	if err := c.BindJSON(&customer); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer data"})
+		return
+	}
+	customer.ID = int64(uint(id)) // Assuming ID field is of type uint
+
+	updatedCustomer, err := services.UpdateCustomerService(c.Request.Context(), database.GetDB(), &customer)
+	if err != nil {
+		if errors.Is(err, errs.ErrCustomerNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
+			return
+		}
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedCustomer)
 }
 
-// DeleteCustomer handles DELETE request to delete a customer
 func DeleteCustomer(c *gin.Context) {
-	//id := c.Param("id")
-	// Implementation to delete a customer
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
+		return
+	}
+
+	err = services.DeleteCustomerService(c.Request.Context(), database.GetDB(), uint(id))
+	if err != nil {
+		if errors.Is(err, errs.ErrCustomerNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
+			return
+		}
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }

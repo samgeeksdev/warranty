@@ -1,13 +1,28 @@
 package errs
 
-import (
-	"errors"
-)
+import "errors"
 
-var ErrUsernameOrEmailExists = errors.New("username or email already exists")
-var ErrUserNotFound = errors.New("UserNotFound")
-var UnAuthorize = errors.New("PLease First Logedin")
-var ErrMissingField = errors.New("ErrMissingField")
+var (
+	ErrClaimAuditNotFound                 = errors.New("claim audit not found")
+	ErrCustomerNotFound                   = errors.New("customer not found")
+	ErrManufacturerNotFound               = errors.New("manufacturer not found")
+	ErrPermissionNotFound                 = errors.New("permission not found")
+	ErrProductCategoryAssociationNotFound = errors.New("product category association not found")
+	ErrProductNotFound                    = errors.New("product not found")
+	ErrProductCategoryNotFound            = errors.New("product category not found")
+	ErrRoleNotFound                       = errors.New("role not found")
+	ErrUserRoleNotFound                   = errors.New("user role not found")
+	ErrUsernameOrEmailExists              = errors.New("username or email already exists")
+	ErrUserNotFound                       = errors.New("UserNotFound")
+	UnAuthorize                           = errors.New("PLease First Logedin")
+	ErrMissingField                       = errors.New("ErrMissingField")
+	ErrWarrantyNotFound                   = errors.New("ErrWarrantyNotFound")
+	ErrInvalidEmailOrPass                 = errors.New("ErrInvalidEmailOrPass")
+	ErrInvalidPhone                       = errors.New("ErrInvalidPhone")
+	ErrInvalidUsernameOrPassword          = errors.New("ErrInvalidUsernameOrPassword")
+	ErrWarrantyTypeNotFound               = errors.New("warranty type not found")
+	ErrWarrantyAuditNotFound              = errors.New("ErrWarrantyAuditNotFound")
+)
 
 //
 //const (
